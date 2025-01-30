@@ -1,8 +1,6 @@
-name: Fuel
+name: Award
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
   workflow_dispatch:
 
 jobs:
@@ -11,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          repository: xingalfred/scraper
+          repository: xingalfred/award
           token: ${{ secrets.GH_PAT }}
 
       - uses: actions/setup-python@v5
@@ -23,13 +21,3 @@ jobs:
 
       - name: Install the project
         run: uv sync --no-dev
-
-      - name: Run
-        run: uv run scraper
-
-      - name: Deploy
-        uses: exuanbo/actions-deploy-gist@v1
-        with:
-          token: ${{ secrets.TOKEN_GIST }}
-          gist_id: da39e0dab6a7c1396278604db05fb4dc
-          file_path: data/fuel_prices.json
