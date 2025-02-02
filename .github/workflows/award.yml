@@ -28,5 +28,5 @@ jobs:
         run: uv run awardx route
         env:
           LOGGING_CONFIG_PATH: logging.yaml
-          SQLITE_DB_PATH: ./data/award.db
+          SQLITE_DB_PATH: ./award.db
           _TYPER_STANDARD_TRACEBACK: 1
