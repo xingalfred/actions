@@ -38,7 +38,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: award-db
-          path: ./data/award.db
+          path: ./data/
           run-id: ${{ env.artifact_run_id }}
           github-token: ${{ secrets.GH_PAT  }}
         continue-on-error: true
