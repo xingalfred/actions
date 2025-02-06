@@ -41,7 +41,7 @@ jobs:
         continue-on-error: true
 
       - name: Display downloaded file
-        run: ls data/
+        run: ls ./data/
 
       - name: Run
         run: uv run awardx route
