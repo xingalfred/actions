@@ -26,9 +26,40 @@ jobs:
 
       - uses: browser-actions/setup-chrome@v1
 
+      - name: Get latest artifact run id
+        run: |
+          ARTIFACT_RUN_ID=$(curl -s "https://api.github.com/repos/${{ github.repository }}/actions/artifacts?per_page=1" | jq '.artifacts[0].workflow_run.id')
+          echo "artifact_run_id=$ARTIFACT_RUN_ID" >> $GITHUB_ENV
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: award-db
+          path: ./data/award.db
+          run-id: ${{ env.artifact_run_id }}
+          github-token: ${{ secrets.GH_PAT  }}
+        continue-on-error: true
+
+      - name: Display downloaded file
+        run: ls data/
+
       - name: Run
         run: uv run awardx route
         env:
           LOGGING_CONFIG_PATH: logging.yaml
-          SQLITE_DB_PATH: ./award.db
+          SQLITE_DB_PATH: ./data/award.db
           _TYPER_STANDARD_TRACEBACK: 1
+
+      - name: Run
+        run: uv run awardx itinerary AMS SYD
+        env:
+          LOGGING_CONFIG_PATH: logging.yaml
+          SQLITE_DB_PATH: ./data/award.db
+          _TYPER_STANDARD_TRACEBACK: 1
+
+      - name: Upload updated artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: award-db
+          path: ./data/award.db
+          if-no-files-found: error
