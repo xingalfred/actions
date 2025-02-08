@@ -21,9 +21,6 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
 
-      - name: Install the project
-        run: uv sync --no-dev
-
       - uses: browser-actions/setup-chrome@v1
 
       - name: Get latest artifact run id
@@ -47,7 +44,7 @@ jobs:
         run: ls ./data/
 
       - name: Run
-        run: uv run awardx route
+        run: uv run --no-dev awardx route
         env:
           LOGGING_CONFIG_PATH: logging.yaml
           SQLITE_DB_PATH: ./data/award.db
