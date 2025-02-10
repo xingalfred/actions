@@ -50,6 +50,13 @@ jobs:
           SQLITE_DB_PATH: ./data/award.db
           _TYPER_STANDARD_TRACEBACK: 1
 
+      - name: Run
+        run: uv run --no-dev awardx itinerary SYD AMS
+        env:
+          LOGGING_CONFIG_PATH: logging.yaml
+          SQLITE_DB_PATH: ./data/award.db
+          _TYPER_STANDARD_TRACEBACK: 1
+
       - name: Upload updated artifact
         uses: actions/upload-artifact@v4
         with:
