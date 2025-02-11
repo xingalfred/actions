@@ -22,9 +22,13 @@ jobs:
           path: data
 
       - uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 1418288
+
       - uses: actions/setup-python@v5
         with:
           python-version-file: app/.python-version
+
       - uses: astral-sh/setup-uv@v5
 
       - name: Run
