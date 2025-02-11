@@ -35,13 +35,13 @@ jobs:
           LOGGING_CONFIG_PATH: logging.yaml
           SQLITE_DB_PATH: ${{ github.workspace }}/data/award.db
 
-      # - name: Run
-      #   run: uv run --no-dev awardx itinerary SYD AMS
-      #   working-directory: app
-      #   env:
-      #     _TYPER_STANDARD_TRACEBACK: 1
-      #     LOGGING_CONFIG_PATH: logging.yaml
-      #     SQLITE_DB_PATH: ${{ github.workspace }}/data/award.db
+      - name: Run
+        run: uv run --no-dev awardx itinerary SYD AMS
+        working-directory: app
+        env:
+          _TYPER_STANDARD_TRACEBACK: 1
+          LOGGING_CONFIG_PATH: logging.yaml
+          SQLITE_DB_PATH: ${{ github.workspace }}/data/award.db
 
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
