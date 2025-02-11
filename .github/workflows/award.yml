@@ -9,24 +9,23 @@ jobs:
   run:
     runs-on: ubuntu-latest
     steps:
-      - uses: browser-actions/setup-chrome@v1
-      - uses: astral-sh/setup-uv@v5
-
       - uses: actions/checkout@v4
         with:
           repository: xingalfred/award
           token: ${{ secrets.GH_PAT }}
           path: app
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version-file: app/.python-version
-
       - uses: actions/checkout@v4
         with:
           repository: xingalfred/award-db
           token: ${{ secrets.GH_PAT }}
           path: data
+
+      - uses: browser-actions/setup-chrome@v1
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: app/.python-version
+      - uses: astral-sh/setup-uv@v5
 
       - name: Run
         run: uv run --no-dev awardx route
