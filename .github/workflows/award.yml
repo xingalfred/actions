@@ -44,5 +44,6 @@ jobs:
       #     LOGGING_CONFIG_PATH: logging.yaml
       #     SQLITE_DB_PATH: ${{ github.workspace }}/data/award.db
 
-      - run: cd data
       - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          repoistory: data
