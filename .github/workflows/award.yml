@@ -28,13 +28,13 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version-file: app/.python-version
+          python-version-file: app/py/.python-version
 
       - uses: astral-sh/setup-uv@v5
 
       - name: Run
         run: uv run --no-dev awardx route
-        working-directory: app
+        working-directory: app/py
         env:
           _TYPER_STANDARD_TRACEBACK: 1
           LOGGING_CONFIG_PATH: logging.yaml
@@ -42,7 +42,7 @@ jobs:
 
       - name: Run
         run: uv run --no-dev awardx itinerary SYD AMS
-        working-directory: app
+        working-directory: app/py
         env:
           _TYPER_STANDARD_TRACEBACK: 1
           LOGGING_CONFIG_PATH: logging.yaml
