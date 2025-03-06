@@ -33,6 +33,11 @@ jobs:
       - uses: astral-sh/setup-uv@v5
 
       - name: Run
+        working-directory: data
+        run: |
+          [ -f "award.db.zst" ] && zstd --rm -d award.db.zst -o award.db
+
+      - name: Run
         run: uv run --no-dev awardx route
         working-directory: app/py
         env:
@@ -47,6 +52,11 @@ jobs:
           _TYPER_STANDARD_TRACEBACK: 1
           LOGGING_CONFIG_PATH: logging.yaml
           SQLITE_DB: ${{ github.workspace }}/data/award.db
+
+      - name: Run
+        working-directory: data
+        run: |
+          zstd --rm award.db
 
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
