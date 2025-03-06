@@ -35,7 +35,9 @@ jobs:
       - name: Run
         working-directory: data
         run: |
-          [ -f "award.db.zst" ] && zstd --rm -d award.db.zst -o award.db
+          if [ -f "award.db.zst" ]; then
+            zstd --rm -d award.db.zst -o award.db
+          fi
 
       - name: Run
         run: uv run --no-dev awardx route
