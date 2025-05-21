@@ -48,7 +48,7 @@ jobs:
           SQLITE_DB: ${{ github.workspace }}/data/award.db
 
       - name: Run
-        run: uv run --no-dev awardx itinerary AMS SYD
+        run: uv run --no-dev awardx itinerary AMS SIN SYD
         working-directory: app
         env:
           _TYPER_STANDARD_TRACEBACK: 1
