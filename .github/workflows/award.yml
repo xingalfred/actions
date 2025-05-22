@@ -47,7 +47,7 @@ jobs:
         working-directory: app
         env:
           _TYPER_STANDARD_TRACEBACK: 1
-          CALENDAR_PERIODS: 3
+          CALENDAR_PERIODS: 6
           MAGNITUDE: 1
           DURATION: 2
           SQLITE_DB: ${{ github.workspace }}/data/award.db
