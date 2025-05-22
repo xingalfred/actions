@@ -47,7 +47,7 @@ jobs:
         env:
           CALENDAR_PERIODS: 3
           MAGNITUDE: 1
-          DURATION: 2
+          DURATION: 1
           SQLITE_DB: ${{ github.workspace }}/data/award.db
 
       - name: Run
