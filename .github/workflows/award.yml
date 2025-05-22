@@ -38,7 +38,6 @@ jobs:
         run: uv run --no-dev awardx route
         working-directory: app
         env:
-          _TYPER_STANDARD_TRACEBACK: 1
           LOGGING_CONFIG_PATH: logging.yaml
           SQLITE_DB: ${{ github.workspace }}/data/award.db
 
@@ -46,7 +45,6 @@ jobs:
         run: uv run --no-dev awardx itinerary AMS SIN SYD
         working-directory: app
         env:
-          _TYPER_STANDARD_TRACEBACK: 1
           CALENDAR_PERIODS: 3
           MAGNITUDE: 1
           DURATION: 2
