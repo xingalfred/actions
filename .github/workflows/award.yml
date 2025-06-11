@@ -49,7 +49,7 @@ jobs:
           _TYPER_STANDARD_TRACEBACK: 1
           CALENDAR_PERIODS: 6
           MAGNITUDE: 1
-          DURATION: 2
+          DURATION: 1.5
           SQLITE_DB: ${{ github.workspace }}/data/award.db
 
       - name: Run
