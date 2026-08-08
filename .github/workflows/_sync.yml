@@ -18,6 +18,10 @@ on:
       dry_run:
         type: boolean
         default: false
+      loop_minutes:
+        description: "Keep starting fresh passes until this many minutes have elapsed"
+        type: number
+        default: 0
 
 permissions:
   contents: read
@@ -49,4 +53,5 @@ jobs:
         env:
           DATA_DIR: ${{ github.workspace }}/data
           DRY_RUN: ${{ inputs.dry_run && '1' || '' }}
+          LOOP_MINUTES: ${{ inputs.dry_run && 0 || inputs.loop_minutes }}
         run: ./scripts/ci_run.sh ${{ inputs.shard }}
