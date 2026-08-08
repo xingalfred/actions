@@ -1,14 +1,22 @@
 # Part 1. Everything it does is in the private code repository; this file only says
 # when, and for how long at most.
 #
-# Runs back to back: scheduled about as often as one takes, with the concurrency group
-# below keeping two from overlapping. Each run is one pass and reports its own outcome.
+# Runs back to back. Scheduled far more often than one takes, on purpose: the concurrency
+# group below is what actually paces this, and over-scheduling is how it stays paced when
+# GitHub's scheduler does not deliver. Observed 2026-08-08: a */15 schedule fired at :03 and
+# then not again for over 40 minutes.
+#
+# Excess fires cost nothing. A run arriving while one is in progress waits, and a second
+# arrival replaces the waiting one rather than adding to it, so at most one is ever pending
+# and the rest are cancelled before they start — no runner time, just noise in the run list.
+# Filter it with `--status completed`. Each run that does start is one pass with its own
+# outcome.
 
 name: Sync 1
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
     inputs:
       dry_run:
