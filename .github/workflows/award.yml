@@ -52,8 +52,12 @@ jobs:
         run: ./scripts/ci_run.sh ${{ matrix.shard }}
 
       - uses: actions/upload-artifact@v4
+        # Even when the shard failed: the log says only "see the run table", and the run
+        # table is in these files. Without this a failure leaves nothing to read.
+        if: always()
         with:
           name: part-${{ matrix.shard }}
+          if-no-files-found: ignore
           path: /tmp/part-${{ matrix.shard }}-*.db
           retention-days: 1
 
