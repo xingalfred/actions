@@ -67,8 +67,15 @@ jobs:
       # and stopping on failure would need a human to restart it. `GH_PAT` rather than
       # `GITHUB_TOKEN` because GitHub refuses to start a workflow from an event raised by
       # `GITHUB_TOKEN`, so a chain built on it would silently never continue.
+      #
+      # `continue-on-error` because failing to ask for the next run is not a failed run. The
+      # work is done and committed by this point, and marking the whole thing failed hid
+      # that: the first chained runs on 2026-08-08 reported failure with a successful scrape
+      # and a landed commit behind them. A broken chain is recoverable — that is what the
+      # caller's cron is for — and it should look like what it is.
       - name: Continue
         if: always() && inputs.chain && !inputs.dry_run && inputs.workflow != ''
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: gh workflow run "${{ inputs.workflow }}" --repo "${{ github.repository }}"
