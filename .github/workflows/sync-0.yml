@@ -1,14 +1,14 @@
 # Part 0. Everything it does is in the private code repository; this file only says
 # when, and for how long at most.
 #
-# Keeps starting fresh passes for most of the gap until the next scheduled start, so the
-# clock is nearly always doing something. Each pass commits on its own.
+# Runs back to back: scheduled about as often as one takes, with the concurrency group
+# below keeping two from overlapping. Each run is one pass and reports its own outcome.
 
 name: Sync 0
 
 on:
   schedule:
-    - cron: "23 */2 * * *"
+    - cron: "*/15 * * * *"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -28,6 +28,5 @@ jobs:
     secrets: inherit
     with:
       shard: "0"
-      timeout: 115
+      timeout: 25
       dry_run: ${{ inputs.dry_run || false }}
-      loop_minutes: 100

@@ -1,7 +1,7 @@
 # Part 2. Everything it does is in the private code repository; this file only says
 # when, and for how long at most.
 #
-# One pass per start. This one pushes back under load, so it runs on the clock.
+# On the clock, not back to back. This one pushes back under load.
 
 name: Sync 2
 
@@ -29,4 +29,3 @@ jobs:
       shard: "2"
       timeout: 12
       dry_run: ${{ inputs.dry_run || false }}
-      loop_minutes: 0
