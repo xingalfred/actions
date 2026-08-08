@@ -1,7 +1,8 @@
 # Part 1. Everything it does is in the private code repository; this file only says
 # when, and for how long at most.
 #
-# Chained: the cron is only the way back in if a chain breaks.
+# Keeps starting fresh passes for most of the gap until the next scheduled start, so the
+# clock is nearly always doing something. Each pass commits on its own.
 
 name: Sync 1
 
@@ -27,7 +28,6 @@ jobs:
     secrets: inherit
     with:
       shard: "1"
-      timeout: 25
+      timeout: 115
       dry_run: ${{ inputs.dry_run || false }}
-      chain: true
-      workflow: sync-1.yml
+      loop_minutes: 100

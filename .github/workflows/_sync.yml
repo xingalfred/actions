@@ -18,14 +18,10 @@ on:
       dry_run:
         type: boolean
         default: false
-      chain:
-        description: "Re-dispatch this workflow when the run finishes"
-        type: boolean
-        default: false
-      workflow:
-        description: "This caller's filename, for chaining"
-        type: string
-        default: ""
+      loop_minutes:
+        description: "Keep starting fresh passes until this many minutes have elapsed"
+        type: number
+        default: 0
 
 permissions:
   contents: read
@@ -57,25 +53,5 @@ jobs:
         env:
           DATA_DIR: ${{ github.workspace }}/data
           DRY_RUN: ${{ inputs.dry_run && '1' || '' }}
+          LOOP_MINUTES: ${{ inputs.dry_run && 0 || inputs.loop_minutes }}
         run: ./scripts/ci_run.sh ${{ inputs.shard }}
-
-      # Ask for the next run as this one ends, rather than waiting for a cron that fires on
-      # a fixed period whether or not anything is running. The caller's cron stays as the way
-      # back in if a chain ever breaks.
-      #
-      # `if: always()` so a failed run still continues the chain: work advances either way,
-      # and stopping on failure would need a human to restart it. `GH_PAT` rather than
-      # `GITHUB_TOKEN` because GitHub refuses to start a workflow from an event raised by
-      # `GITHUB_TOKEN`, so a chain built on it would silently never continue.
-      #
-      # `continue-on-error` because failing to ask for the next run is not a failed run. The
-      # work is done and committed by this point, and marking the whole thing failed hid
-      # that: the first chained runs on 2026-08-08 reported failure with a successful scrape
-      # and a landed commit behind them. A broken chain is recoverable — that is what the
-      # caller's cron is for — and it should look like what it is.
-      - name: Continue
-        if: always() && inputs.chain && !inputs.dry_run && inputs.workflow != ''
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
-        run: gh workflow run "${{ inputs.workflow }}" --repo "${{ github.repository }}"
