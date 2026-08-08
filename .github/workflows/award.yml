@@ -81,6 +81,10 @@ jobs:
           merge-multiple: true
 
       - name: Collect
+        env:
+          # This job does not run ci_run.sh, so it has to silence itself: the collect step
+          # was naming the programs it placed into a world-readable log.
+          AWARD_QUIET: "1"
         run: uv run --project code code/scripts/ci_collect.py data --parts /tmp/parts
 
       - name: Commit
