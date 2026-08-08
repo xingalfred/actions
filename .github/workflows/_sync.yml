@@ -1,0 +1,74 @@
+# The shared body of every sync. Called by sync-0/1/2, never triggered directly.
+#
+# One file so the callers cannot drift. Everything that differs between them is either an
+# input here or lives in the private code repository, which is where anything that would
+# identify this belongs.
+
+name: Sync body
+
+on:
+  workflow_call:
+    inputs:
+      shard:
+        required: true
+        type: string
+      timeout:
+        required: true
+        type: number
+      dry_run:
+        type: boolean
+        default: false
+      chain:
+        description: "Re-dispatch this workflow when the run finishes"
+        type: boolean
+        default: false
+      workflow:
+        description: "This caller's filename, for chaining"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.timeout }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.CODE_REPO }}
+          token: ${{ secrets.GH_PAT }}
+          path: code
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ secrets.DATA_REPO }}
+          token: ${{ secrets.GH_PAT }}
+          path: data
+
+      - uses: astral-sh/setup-uv@v5
+
+      # The script commits what it produced into `data` on the way out, on a trap, so a run
+      # that fails still records why. There is deliberately **no artifact upload**: artifacts
+      # on a public repository are listable unauthenticated and downloadable by any account,
+      # which would put private files in a public store on every run. Removed 2026-08-08.
+      - name: Run
+        working-directory: code
+        env:
+          DATA_DIR: ${{ github.workspace }}/data
+          DRY_RUN: ${{ inputs.dry_run && '1' || '' }}
+        run: ./scripts/ci_run.sh ${{ inputs.shard }}
+
+      # Ask for the next run as this one ends, rather than waiting for a cron that fires on
+      # a fixed period whether or not anything is running. The caller's cron stays as the way
+      # back in if a chain ever breaks.
+      #
+      # `if: always()` so a failed run still continues the chain: work advances either way,
+      # and stopping on failure would need a human to restart it. `GH_PAT` rather than
+      # `GITHUB_TOKEN` because GitHub refuses to start a workflow from an event raised by
+      # `GITHUB_TOKEN`, so a chain built on it would silently never continue.
+      - name: Continue
+        if: always() && inputs.chain && !inputs.dry_run && inputs.workflow != ''
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: gh workflow run "${{ inputs.workflow }}" --repo "${{ github.repository }}"

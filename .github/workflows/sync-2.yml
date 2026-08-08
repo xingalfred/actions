@@ -1,0 +1,33 @@
+# Part 2. Everything it does is in the private code repository; this file only says
+# when, and for how long at most.
+#
+# Not chained. This one pushes back under load, so it runs on the clock, not continuously.
+
+name: Sync 2
+
+on:
+  schedule:
+    - cron: "7 */2 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Do everything except commit"
+        type: boolean
+        default: false
+
+# Queue rather than overlap. Two runs of the same part would repeat each other's work and
+# race each other's commit for no gain.
+concurrency:
+  group: sync-2
+  cancel-in-progress: false
+
+jobs:
+  run:
+    uses: ./.github/workflows/_sync.yml
+    secrets: inherit
+    with:
+      shard: "2"
+      timeout: 12
+      dry_run: ${{ inputs.dry_run || false }}
+      chain: false
+      workflow: sync-2.yml
